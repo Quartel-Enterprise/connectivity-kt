@@ -6,7 +6,7 @@ androidx-annotation = "1.11.0"
 koin = "4.2.2"
 kotlin = "2.4.21"
 kotlinx-coroutines = "1.11.0"
-quare-ktlint-rules = "1.0.2"
+quare-ktlint-rules = "1.1.0"
 vanniktech-maven-publish = "0.37.0"
 
 [libraries]
