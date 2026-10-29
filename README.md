@@ -20,7 +20,7 @@ Platforms: Android, JVM, JS, Wasm/JS, iOS, macOS and Linux (x64 and ARM64).
 
 ```kotlin
 dependencies {
-    implementation("software.quare:connectivity:1.0.0")
+    implementation("software.quare:connectivity:1.1.0")
 }
 ```
 
@@ -28,7 +28,7 @@ Or with a version catalog:
 
 ```toml
 [versions]
-quare-connectivity = "1.0.0"
+quare-connectivity = "1.1.0"
 
 [libraries]
 quare-connectivity = { module = "software.quare:connectivity", version.ref = "quare-connectivity" }
