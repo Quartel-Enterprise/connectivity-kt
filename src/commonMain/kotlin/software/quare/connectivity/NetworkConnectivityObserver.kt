@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
  * - iOS and macOS: the `NWPathMonitor` path is satisfied.
  * - JVM: some network interface other than loopback is up, checked every 3 seconds. A local network without
  *   internet counts as connected.
+ * - Linux: some network interface other than loopback has the operstate "up", checked every 3 seconds. A local
+ *   network without internet counts as connected, and so does a system whose `/sys/class/net` can't be read.
  * - JS and Wasm/JS: the browser's `navigator.onLine`, checked every 3 seconds.
  */
 public fun interface NetworkConnectivityObserver {
