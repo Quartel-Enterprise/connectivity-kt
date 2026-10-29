@@ -28,8 +28,16 @@ internal class SysClassNetTest {
     fun `GIVEN interfaces with an operstate WHEN reading THEN maps each one to its state`() {
         // Given
         val directory = createDirectory()
-        newInterface(directory, name = "lo", state = "unknown")
-        newInterface(directory, name = "eth0", state = "up\n")
+        newInterface(
+            directory,
+            name = "lo",
+            state = "unknown",
+        )
+        newInterface(
+            directory,
+            name = "eth0",
+            state = "up\n",
+        )
 
         // When
         val states = readSysClassNet(directory)
@@ -42,7 +50,11 @@ internal class SysClassNetTest {
     fun `GIVEN an entry without an operstate WHEN reading THEN leaves it out`() {
         // Given
         val directory = createDirectory()
-        newInterface(directory, name = "eth0", state = "up")
+        newInterface(
+            directory,
+            name = "eth0",
+            state = "up",
+        )
         writeFile("$directory/bonding_masters", "bond0")
 
         // When
