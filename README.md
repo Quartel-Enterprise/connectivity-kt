@@ -14,7 +14,7 @@ class Synchronizer(
 }
 ```
 
-Platforms: Android, JVM, JS, Wasm/JS, iOS and macOS.
+Platforms: Android, JVM, JS, Wasm/JS, iOS, macOS and Linux (x64 and ARM64).
 
 ## Installation
 
@@ -76,12 +76,13 @@ val offline = IsConnected { false }
 | Android | The active network has internet access and the system validated it (a captive portal doesn't count) | Pushed by `ConnectivityManager` |
 | iOS, macOS | The `NWPathMonitor` path is satisfied | Pushed by the Network framework |
 | JVM | A network interface other than loopback is up (a local network without internet counts) | Checked every 3 seconds |
+| Linux | A network interface other than loopback has the `operstate` "up" in `/sys/class/net` (a local network without internet counts). If that directory can't be read, as in some sandboxes, it counts as connected | Checked every 3 seconds |
 | JS, Wasm/JS | The browser's `navigator.onLine` is true | Checked every 3 seconds |
 
 ## Development
 
 ```bash
-./gradlew allTests       # every target (Apple targets need macOS)
+./gradlew allTests       # every target (Apple targets need macOS, the Linux tests a Linux host)
 ./scripts/ktlint.sh      # lint with the Quare ruleset (--format to fix)
 ./gradlew publishToMavenLocal  # try a change in an app before releasing it
 ```
