@@ -5,18 +5,20 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Watches whether the device can reach the internet.
  *
- * Get the platform implementation from Koin after loading [connectivityModule]. Being a `fun interface`, it is also
- * easy to fake in tests: `NetworkConnectivityObserver { flowOf(true) }`.
+ * Get the platform implementation from Koin after loading [connectivityModule], or without Koin from
+ * `createNetworkConnectivityObserver()` (`createNetworkConnectivityObserver(context)` on Android). Being a
+ * `fun interface`, it is also easy to fake in tests: `NetworkConnectivityObserver { flowOf(true) }`.
  *
  * What counts as connected depends on the platform:
- * - Android: the active network has internet access and the system validated it, so a captive portal or a Wi-Fi
+ * - Android: a network has internet access and the system validated it, so a captive portal or a Wi-Fi
  *   without internet counts as disconnected.
  * - iOS and macOS: the `NWPathMonitor` path is satisfied.
  * - JVM: some network interface other than loopback is up, checked every 3 seconds. A local network without
  *   internet counts as connected.
  * - Linux: some network interface other than loopback has the operstate "up", checked every 3 seconds. A local
  *   network without internet counts as connected, and so does a system whose `/sys/class/net` can't be read.
- * - JS and Wasm/JS: the browser's `navigator.onLine`, checked every 3 seconds.
+ * - JS and Wasm/JS: the browser's `navigator.onLine`, checked every 3 seconds. Where there is no `navigator.onLine`,
+ *   as on Node.js, it counts as connected.
  */
 public fun interface NetworkConnectivityObserver {
     /**

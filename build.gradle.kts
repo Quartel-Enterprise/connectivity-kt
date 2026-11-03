@@ -71,7 +71,8 @@ mavenPublishing {
 
     pom {
         name = "Connectivity"
-        description = "A Kotlin Multiplatform observer of whether the device can reach the internet, wired with Koin."
+        description =
+            "Kotlin Multiplatform connectivity observer: a Flow<Boolean> of whether the device is online, with a Koin module."
         inceptionYear = "2026"
         url = "https://github.com/Quartel-Enterprise/connectivity-kt"
 

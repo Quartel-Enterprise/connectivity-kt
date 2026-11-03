@@ -32,6 +32,15 @@ internal class ConnectivityModuleTest {
         assertNotNull(isConnected)
     }
 
+    @Test
+    fun `GIVEN no Koin WHEN creating the observer THEN returns the desktop implementation`() {
+        // When
+        val observer = createNetworkConnectivityObserver()
+
+        // Then
+        assertIs<DesktopNetworkConnectivityObserver>(observer)
+    }
+
     @BeforeTest
     fun setUp() {
         koinApplication = koinApplication { modules(connectivityModule) }

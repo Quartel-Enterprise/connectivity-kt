@@ -4,7 +4,7 @@ package software.quare.connectivity
  * Checks once whether the device is connected right now, by the same rules as [NetworkConnectivityObserver].
  *
  * Use it before a one-off request; to react to changes, collect [NetworkConnectivityObserver.observe] instead.
- * [connectivityModule] provides it.
+ * [connectivityModule] provides it, and [createIsConnected] creates it without Koin.
  */
 public fun interface IsConnected {
     /**
