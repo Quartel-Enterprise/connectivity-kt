@@ -2,8 +2,8 @@
 
 A small Kotlin Multiplatform library that tells your app whether the device is online, and lets it react when that
 changes. Use it to pause sync while offline, show an "offline" banner, or retry a request when the connection comes
-back. It has no UI and doesn't depend on Compose. Its implementations are provided through a [Koin](https://insert-koin.io)
-module (see [Without Koin](#without-koin) if your app doesn't use Koin).
+back. It has no UI and doesn't depend on Compose. It comes with a [Koin](https://insert-koin.io) module, and plain factory
+functions for apps that don't use Koin (see [Without Koin](#without-koin)).
 
 ```kotlin
 class Synchronizer(
@@ -32,7 +32,7 @@ reachable; see [What counts as connected](#what-counts-as-connected).
 | Browser | `js`, `wasmJs` | |
 
 There are no Intel Apple targets (`iosX64`, `macosX64`), no watchOS, tvOS or Windows. The `js` and `wasmJs` artifacts
-also declare Node.js, but Node has no `navigator.onLine`, so the observer gives no meaningful answer there.
+also declare Node.js, which has no `navigator.onLine`, so there the observer always reports connected.
 
 ## Installation
 
@@ -82,36 +82,28 @@ On Android the module needs the application `Context` from Koin. `androidContext
 
 ### Without Koin
 
-The platform implementations are internal, so you still get them through `connectivityModule`, but you don't have to
-use Koin in the rest of your app. Build a private Koin container once, without `startKoin`, and keep the instances you
-need:
+Create the instances yourself with the factory functions, the same ones `connectivityModule` uses:
 
 ```kotlin
-import org.koin.dsl.koinApplication
 import software.quare.connectivity.IsConnected
 import software.quare.connectivity.NetworkConnectivityObserver
-import software.quare.connectivity.connectivityModule
+import software.quare.connectivity.createIsConnected
+import software.quare.connectivity.createNetworkConnectivityObserver
 
-private val connectivity = koinApplication { modules(connectivityModule) }.koin
-
-val networkConnectivityObserver: NetworkConnectivityObserver = connectivity.get()
-val isConnected: IsConnected = connectivity.get()
+val networkConnectivityObserver: NetworkConnectivityObserver = createNetworkConnectivityObserver()
+val isConnected: IsConnected = createIsConnected(networkConnectivityObserver)
 ```
 
-On Android, give that container the application context yourself, which avoids needing `koin-android`:
+On Android, `createNetworkConnectivityObserver` takes a `Context`; it only uses the application context, so passing an
+`Activity` is fine:
 
 ```kotlin
-import android.content.Context
-import org.koin.dsl.koinApplication
-import org.koin.dsl.module
-
-val connectivity = koinApplication {
-    modules(
-        module { single<Context> { applicationContext } },
-        connectivityModule,
-    )
-}.koin
+val networkConnectivityObserver = createNetworkConnectivityObserver(context)
 ```
+
+`createNetworkConnectivityObserver` is declared per platform (with a `Context` on Android, without one elsewhere), so
+in a multiplatform project call it from platform code, or from an `expect`/`actual` of your own, and pass the observer
+to common code. `koin-core` still comes along as a dependency, but nothing starts Koin unless you do.
 
 ## Usage
 
@@ -125,7 +117,7 @@ val isConnected: IsConnected = get()
 if (isConnected()) fetch() // one-off check; suspends until the platform reports the current state
 ```
 
-`NetworkConnectivityObserver` is a single instance; `IsConnected` is created on each request and reads the first value
+From the module, `NetworkConnectivityObserver` is a single instance; `IsConnected` is created on each request and reads the first value
 of `observe()`.
 
 ### In a ViewModel and in Compose
@@ -164,11 +156,11 @@ fun SyncScreen(viewModel: SyncViewModel) {
 
 | Platform | `true` when | Updates |
 | --- | --- | --- |
-| Android | A network has internet access and Android validated it (its own connectivity check passed). A captive portal or a Wi-Fi without internet counts as disconnected | Pushed by `ConnectivityManager` |
+| Android | Some network, not only the default one, has internet access and Android validated it (its own connectivity check passed). A captive portal or a Wi-Fi without internet counts as disconnected. The first value follows the same rule as the updates | Pushed by `ConnectivityManager` |
 | iOS, macOS | The `NWPathMonitor` path is satisfied: there is a usable network route. It doesn't check that the internet is reachable | Pushed by the Network framework |
 | JVM | Some network interface other than loopback is up. Virtual interfaces (VPN, Docker, VMs) count, and so does a local network without internet. If the interfaces can't be read, it counts as connected | Checked every 3 seconds |
 | Linux | Some network interface other than loopback has the `operstate` "up" in `/sys/class/net`. A local network without internet counts. If that directory can't be read, as in some sandboxes, it counts as connected | Checked every 3 seconds |
-| Browser (JS, Wasm/JS) | `navigator.onLine` is true, which the browser reports for any network, even one without internet | Checked every 3 seconds |
+| Browser (JS, Wasm/JS) | `navigator.onLine` is true, which the browser reports for any network, even one without internet. Without `navigator.onLine`, as on Node.js, it counts as connected | Checked every 3 seconds |
 
 If you need to know that your own server answers, make the request and handle the failure; this library only tells
 you when trying is pointless or when it is worth retrying.

@@ -33,6 +33,10 @@ ktlint_quare_max-file-length = disabled
 [src/commonMain/**]
 ktlint_quare_comments-say-why = disabled
 
+# Why: createNetworkConnectivityObserver is public API too, declared per platform because Android needs a Context
+[src/*Main/**/NetworkConnectivityObserverFactory.*.kt]
+ktlint_quare_comments-say-why = disabled
+
 [*.kts]
 ktlint_quare_comments-say-why = disabled
 
