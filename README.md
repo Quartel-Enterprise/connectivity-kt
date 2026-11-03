@@ -40,7 +40,7 @@ The library is on Maven Central, so `mavenCentral()` in your repositories is eno
 
 ```kotlin
 dependencies {
-    implementation("software.quare:connectivity:1.1.0")
+    implementation("software.quare:connectivity:1.2.0")
 }
 ```
 
@@ -48,7 +48,7 @@ Or with a version catalog:
 
 ```toml
 [versions]
-quare-connectivity = "1.1.0"
+quare-connectivity = "1.2.0"
 
 [libraries]
 quare-connectivity = { module = "software.quare:connectivity", version.ref = "quare-connectivity" }
