@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "software.quare"
-version = "1.2.0"
+version = "1.3.0"
 
 kotlin {
     explicitApi()
@@ -40,6 +40,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     macosArm64()
+    watchosArm64()
+    watchosSimulatorArm64()
     linuxX64()
     linuxArm64()
 

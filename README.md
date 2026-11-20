@@ -28,10 +28,11 @@ reachable; see [What counts as connected](#what-counts-as-connected).
 | JVM (desktop, server) | `jvm` | Java 11 |
 | iOS | `iosArm64`, `iosSimulatorArm64` | |
 | macOS | `macosArm64` | |
+| watchOS | `watchosArm64` (arm64_32), `watchosSimulatorArm64` | |
 | Linux | `linuxX64`, `linuxArm64` | |
 | Browser | `js`, `wasmJs` | |
 
-There are no Intel Apple targets (`iosX64`, `macosX64`), no watchOS, tvOS or Windows. The `js` and `wasmJs` artifacts
+There are no Intel Apple targets (`iosX64`, `macosX64`, `watchosX64`), no `watchosDeviceArm64`, tvOS or Windows. The `js` and `wasmJs` artifacts
 also declare Node.js, which has no `navigator.onLine`, so there the observer always reports connected.
 
 ## Installation
@@ -40,7 +41,7 @@ The library is on Maven Central, so `mavenCentral()` in your repositories is eno
 
 ```kotlin
 dependencies {
-    implementation("software.quare:connectivity:1.2.0")
+    implementation("software.quare:connectivity:1.3.0")
 }
 ```
 
@@ -48,7 +49,7 @@ Or with a version catalog:
 
 ```toml
 [versions]
-quare-connectivity = "1.2.0"
+quare-connectivity = "1.3.0"
 
 [libraries]
 quare-connectivity = { module = "software.quare:connectivity", version.ref = "quare-connectivity" }
